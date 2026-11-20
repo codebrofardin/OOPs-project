@@ -8,7 +8,10 @@ Student.java           Student model
 Professor.java         Professor model
 Course.java            Course model
 Complaint.java         Complaint model
-DataStore.java         Shared in-memory data and initial course catalogue
+DataStore.java         Shared application cache and initial course catalogue
+DbUtility.java         Type-4 MySQL JDBC driver loading and Connection creation
+CourseRegistrationDao.java  JDBC table creation, SELECT/ResultSet loading and DML saving
+database_setup.sql     One-time MySQL database creation script
 AuthService.java       Signup/login routing for Students, Professors, Admin and TAs
 StudentService.java    Student dashboard and functions
 ProfessorService.java  Professor course management and student lists
@@ -17,12 +20,39 @@ TeachingAssistant.java TA subclass that extends Student
 TeachingAssistantService.java      TA dashboard and grading assistance
 TeachingAssistantAdminService.java Admin assignment/unassignment of TA courses
 
-COMPILE AND RUN
-----------------
-Save/extract all .java files in the SAME folder. Open a terminal in that folder:
+DATABASE SETUP, COMPILE AND RUN
+-------------------------------
+1. Install MySQL Server and start it.
+2. Open MySQL and run `database_setup.sql` once. It creates the
+   `course_registration_db` database; the Java program creates the tables.
+3. Download MySQL Connector/J (`mysql-connector-j-<version>.jar`). Put the JAR
+   in this same folder, or note its path.
+4. Open `DbUtility.java` and set `USER` and `PASSWORD` to your own MySQL login.
+   The default URL is `jdbc:mysql://localhost:3306/course_registration_db`.
+5. Open a terminal in this folder and run (replace `<version>` with your JAR's
+   version):
 
-    javac *.java
-    java Main
+    javac -cp ".:mysql-connector-j-<version>.jar" *.java
+    java -cp ".:mysql-connector-j-<version>.jar" Main
+
+   On Windows, replace `:` in the classpath with `;`.
+
+JDBC FLOW USED IN THIS PROJECT
+------------------------------
+The database code follows the JDBC notes directly:
+
+1. `DbUtility.getConnection()` loads `com.mysql.cj.jdbc.Driver` using
+   `Class.forName()` and opens a `Connection` with `DriverManager`.
+2. `CourseRegistrationDao.createTables()` uses a `Statement` and DDL
+   `CREATE TABLE` statements.
+3. `CourseRegistrationDao.loadData()` runs `SELECT` queries and loops through a
+   `ResultSet` using `while (resultSet.next())`.
+4. `CourseRegistrationDao.saveData()` uses DML `INSERT` and `DELETE` statements
+   after every add, update, registration, grade, complaint, or assignment change.
+5. The `Statement` is closed before the parent `Connection` in a `finally` block.
+
+There are no frameworks, ORM libraries, web APIs, or advanced database features.
+The only added dependency is the standard MySQL JDBC driver JAR.
 
 ADMIN LOGIN
 -----------
@@ -37,7 +67,7 @@ Meet Christian:   meet.christian@college.com
 Password for all three demo TAs: TA@123
 These accounts exist only in the Teaching Assistant role. They are not normal
 Student or Professor accounts. TA signup is disabled; the three accounts are
-preloaded when the application starts.
+added on the first database run and then saved in MySQL.
 
 IMPLEMENTED FUNCTIONALITY
 -------------------------
@@ -129,5 +159,6 @@ DATA NOTES / IMPORTANT
    semester 1 as required; the administrator must add the real semester 1 courses
    through Manage course catalog before students can register and progress.
 6. Initial timetable rows are marked as Semester 2 based on their 2xx course codes.
-7. The system uses in-memory collections; all accounts and changes reset after exit.
-   Persistent storage/database has not been requested in the assignment text.
+7. `DataStore` keeps collections while the program is running, but every change is
+   saved through JDBC to MySQL. Accounts, course registrations, grades, complaints,
+   course edits, professor assignments, and TA assignments therefore remain after exit.
