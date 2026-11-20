@@ -129,6 +129,7 @@ public final class TeachingAssistantService {
             return;
         }
         selected.grades.put(course.uniqueKey(), grade);
+        DataStore.saveAll();
         System.out.println("Grade saved/updated for " + selected.name + ".");
         System.out.println("The administrator still completes the semester after all course grades are entered.");
     }
