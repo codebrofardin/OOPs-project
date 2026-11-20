@@ -29,6 +29,7 @@ public final class AuthService {
         if (student.phone.isEmpty()) student.phone = "Not provided";
         if (student.address.isEmpty()) student.address = "Not provided";
         DataStore.students.put(email, student);
+        DataStore.saveAll();
         System.out.println("Student account created. You can now log in.");
     }
 
@@ -59,6 +60,7 @@ public final class AuthService {
         if (professor.phone.isEmpty()) professor.phone = "Not provided";
         if (professor.expertise.isEmpty()) professor.expertise = "Not provided";
         DataStore.professors.put(email, professor);
+        DataStore.saveAll();
         System.out.println("Professor account created. Ask the administrator to assign your courses.");
     }
 
