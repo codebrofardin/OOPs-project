@@ -90,6 +90,7 @@ public final class AdminService {
         if (limit > 0) course.enrollmentLimit = limit;
         try {
             DataStore.addCourse(course);
+            DataStore.saveAll();
             System.out.println("Course added successfully.");
         } catch (IllegalArgumentException e) { System.out.println(e.getMessage()); }
     }
@@ -117,6 +118,7 @@ public final class AdminService {
             for (Set<String> registrations : student.registrations.values()) registrations.remove(key);
             student.grades.remove(key);
         }
+        DataStore.saveAll();
         System.out.println("Course deleted from catalog and student registrations.");
     }
 
@@ -147,6 +149,7 @@ public final class AdminService {
             case 11: c.remarks = AppInput.read("Remarks: "); break;
             default: System.out.println("Invalid field."); return;
         }
+        DataStore.saveAll();
         System.out.println("Course updated.");
     }
 
@@ -220,6 +223,7 @@ public final class AdminService {
                 break;
             default: System.out.println("Invalid choice."); return;
         }
+        DataStore.saveAll();
         System.out.println("Student information updated.");
     }
 
@@ -251,6 +255,7 @@ public final class AdminService {
         double grade = AppInput.readDouble("Enter grade point from 0 to 10: ");
         if (grade < 0 || grade > 10) { System.out.println("Grade must be between 0 and 10."); return; }
         s.grades.put(selected.uniqueKey(), grade);
+        DataStore.saveAll();
         System.out.println("Grade saved/updated by administrator.");
         if (s.completedSemesters.contains(selected.semester)) {
             System.out.printf("Updated CGPA: %.2f%n", StudentService.calculateCGPA(s));
@@ -278,6 +283,7 @@ public final class AdminService {
         double sgpa = StudentService.calculateSGPA(s, semester);
         System.out.printf("Semester %d completed. SGPA: %.2f%n", semester, sgpa);
         s.currentSemester++;
+        DataStore.saveAll();
         System.out.println("Student's current semester is now " + s.currentSemester + ".");
     }
 
@@ -299,6 +305,7 @@ public final class AdminService {
         Professor professor = list.get(number - 1);
         course.professorName = professor.name;
         course.professorEmail = professor.email;
+        DataStore.saveAll();
         System.out.println(professor.name + " assigned to " + course.displayCode() + ".");
     }
 
@@ -379,6 +386,7 @@ public final class AdminService {
                     c.status = "Resolved";
                     c.resolutionDetails = details;
                 } else { System.out.println("Invalid status."); return; }
+                DataStore.saveAll();
                 System.out.println("Complaint updated.");
                 return;
             }
