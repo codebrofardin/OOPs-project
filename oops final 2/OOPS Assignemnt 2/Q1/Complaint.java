@@ -11,10 +11,15 @@ public class Complaint {
     String resolutionDetails = "";
 
     public Complaint(int id, String studentEmail, String description) {
+        this(id, studentEmail, description, LocalDateTime.now());
+    }
+
+    /** Used when a complaint row is reconstructed from the database. */
+    public Complaint(int id, String studentEmail, String description, LocalDateTime createdAt) {
         this.id = id;
         this.studentEmail = studentEmail;
         this.description = description;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = createdAt;
     }
 
     public String dateText() {
