@@ -88,7 +88,10 @@ public final class ProfessorService {
                     c.totalHours = AppInput.readPositiveDouble("Total hours: ");
                     c.scheduledHours = AppInput.readPositiveDouble("Scheduled hours: ");
                     break;
-                case 0: System.out.println("Course updated."); return;
+                case 0:
+                    DataStore.saveAll();
+                    System.out.println("Course updated.");
+                    return;
                 default: System.out.println("Invalid choice.");
             }
         }
