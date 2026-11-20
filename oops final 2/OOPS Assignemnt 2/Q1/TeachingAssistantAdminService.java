@@ -79,11 +79,13 @@ public final class TeachingAssistantAdminService {
                 System.out.println("This TA is already assigned to this course.");
             } else {
                 ta.assignCourse(course.uniqueKey());
+                DataStore.saveAll();
                 System.out.println(ta.name + " assigned to " + course.displayCode() + ".");
             }
         } else {
             if (ta.isAssignedTo(course.uniqueKey())) {
                 ta.unassignCourse(course.uniqueKey());
+                DataStore.saveAll();
                 System.out.println("Course assignment removed.");
             } else {
                 System.out.println("This TA is not assigned to that course.");
