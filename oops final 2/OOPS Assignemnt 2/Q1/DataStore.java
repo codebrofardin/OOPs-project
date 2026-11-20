@@ -2,8 +2,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.sql.SQLException;
 
-/** Shared in-memory data. Data resets when the application is closed. */
+/** Shared application data. CourseRegistrationDao loads and saves this data with JDBC. */
 public final class DataStore {
     private DataStore() { }
 
@@ -19,6 +20,32 @@ public final class DataStore {
     private static int complaintSequence = 1;
 
     public static int nextComplaintId() { return complaintSequence++; }
+
+    /** Keeps the next complaint id correct after existing rows are read from MySQL. */
+    public static void updateComplaintSequence(int existingId) {
+        if (existingId >= complaintSequence) complaintSequence = existingId + 1;
+    }
+
+    /** Finds a normal student or a teaching assistant by email. */
+    public static Student findLearner(String email) {
+        Student student = students.get(email);
+        return student == null ? teachingAssistants.get(email) : student;
+    }
+
+    /** Creates tables and restores the data that was saved in earlier program runs. */
+    public static void loadPersistentData() throws SQLException {
+        CourseRegistrationDao.createTables();
+        CourseRegistrationDao.loadData();
+    }
+
+    /** Saves all current application data after an add, update, or delete operation. */
+    public static void saveAll() {
+        try {
+            CourseRegistrationDao.saveData();
+        } catch (SQLException exception) {
+            System.out.println("Database save failed: " + exception.getMessage());
+        }
+    }
 
     /** Returns normal students and TAs as Student objects for shared student operations. */
     public static List<Student> allLearners() {
