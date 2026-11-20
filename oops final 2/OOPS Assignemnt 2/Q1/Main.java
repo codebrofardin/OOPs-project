@@ -1,8 +1,16 @@
 /** Entry point for the Course Registration System. */
 public class Main {
     public static void main(String[] args) {
+        try {
+            DataStore.loadPersistentData();
+        } catch (Exception exception) {
+            System.out.println("Could not connect to MySQL: " + exception.getMessage());
+            System.out.println("Run database_setup.sql, update DbUtility.java if needed, and add mysql-connector-j to the classpath.");
+            return;
+        }
         DataStore.loadInitialCourses();
         DataStore.loadTeachingAssistants();
+        DataStore.saveAll();
         System.out.println("============================================================");
         System.out.println("             COLLEGE COURSE REGISTRATION SYSTEM");
         System.out.println("============================================================");
