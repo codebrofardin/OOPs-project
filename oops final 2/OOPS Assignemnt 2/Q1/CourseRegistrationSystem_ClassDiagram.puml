@@ -1,0 +1,209 @@
+@startuml CourseRegistration_Implemented
+ title Assignment 2 - Course Registration System\nImplemented Classes (source-faithful)
+ skinparam classAttributeIconSize 0
+ skinparam packageStyle rectangle
+
+class Main <<entry point>> {
+  +{static} main(args: String[]): void
+}
+class AuthService <<utility>> {
+  +{static} studentEntry(): void
+  +{static} professorEntry(): void
+  +{static} teachingAssistantLogin(): void
+  +{static} adminLogin(): void
+  -{static} studentSignup(): void
+  -{static} professorSignup(): void
+  -{static} emailUsed(email: String): boolean
+  -{static} validEmail(email: String): boolean
+}
+class StudentService <<utility>> {
+  +{static} menu(student: Student): void
+  +{static} calculateSGPA(...): double
+  +{static} calculateCGPA(...): double
+  -{static} registerCourse(...): void
+  -{static} viewAvailableCourses(...): void
+  -{static} viewSchedule(...): void
+  -{static} dropCourse(...): void
+  -{static} submitComplaint(...): void
+  -{static} academicProgress(...): void
+  -{static} prerequisiteMet(...): boolean
+  -{static} hasScheduleClash(...): boolean
+}
+class ProfessorService <<utility>> {
+  +{static} menu(professor: Professor): void
+  -{static} assignedCourses(...): List<Course>
+  -{static} chooseCourse(...): Course
+  -{static} viewCourses(...): void
+  -{static} updateCourse(...): void
+  -{static} viewEnrolledStudents(...): void
+}
+class TeachingAssistantService <<utility>> {
+  +{static} menu(ta: TeachingAssistant): void
+  -{static} assignedCourses(...): List<Course>
+  -{static} chooseAssignedCourse(...): Course
+  -{static} viewAssignedCourses(...): void
+  -{static} viewEnrolledStudentsAndGrades(...): void
+  -{static} assignOrUpdateGrade(...): void
+}
+class AdminService <<utility>> {
+  +{static} menu(): void
+  -{static} catalogMenu(): void
+  -{static} addCourse(), deleteCourse(), editCourse(): void
+  -{static} studentRecordsMenu(): void
+  -{static} assignGrade(), finalizeSemester(): void
+  -{static} assignProfessor(): void
+  -{static} complaintsMenu(), updateComplaint(): void
+}
+class TeachingAssistantAdminService <<utility>> {
+  +{static} menu(): void
+  -{static} listTAs(): void
+  -{static} changeAssignment(assign: boolean): void
+}
+class AppInput <<utility>> {
+  -{static} SCANNER: Scanner
+  +{static} read(prompt: String): String
+  +{static} readInt(prompt: String): int
+  +{static} readDouble(prompt: String): double
+  +{static} readPositiveDouble(...): double
+  +{static} line(): void
+}
+class DataStore <<utility; in-memory storage>> {
+  +{static} CREDIT_LIMIT: int = 20
+  +{static} ADMIN_EMAIL, ADMIN_PASSWORD: String
+  +{static} students: Map<String, Student>
+  +{static} teachingAssistants: Map<String, TeachingAssistant>
+  +{static} professors: Map<String, Professor>
+  +{static} courses: Map<String, Course>
+  +{static} complaints: List<Complaint>
+  -{static} complaintSequence: int
+  +{static} nextComplaintId(): int
+  +{static} allLearners(): List<Student>
+  +{static} loadTeachingAssistants(): void
+  +{static} addCourse(course: Course): void
+  +{static} coursesForSemester(...): List<Course>
+  +{static} coursesForProfessor(...): List<Course>
+  +{static} loadInitialCourses(): void
+}
+class Student {
+  ~name: String
+  ~email: String {readOnly}
+  ~password: String
+  ~phone, address: String
+  ~currentSemester: int = 1
+  ~grades: Map<String, Double>
+  ~registrations: Map<Integer, LinkedHashSet<String>>
+  ~completedSemesters: Set<Integer>
+  +Student(name: String, email: String, password: String)
+}
+class TeachingAssistant {
+  -assignedCourseKeys: Set<String>
+  +TeachingAssistant(name: String, email: String, password: String)
+  +getAssignedCourseKeys(): Set<String>
+  +isAssignedTo(courseKey: String): boolean
+  +assignCourse(courseKey: String): void
+  +unassignCourse(courseKey: String): void
+}
+class Professor {
+  ~name: String
+  ~email: String {readOnly}
+  ~password: String
+  ~phone: String
+  ~expertise: String
+  +Professor(name: String, email: String, password: String)
+}
+class Course {
+  ~code, title, shortName: String
+  ~professorName, professorEmail: String
+  ~prerequisite: String
+  ~semester: int
+  ~credits, totalHours, scheduledHours: double
+  ~remarks, day, timing, room: String
+  ~syllabus, officeHours: String
+  ~enrollmentLimit: int = 60
+  +Course(code: String, ..., remarks: String)
+  +uniqueKey(): String
+  +displayCode(): String
+  +display(): void
+  -displayOrNotSet(value: String): String
+}
+class Complaint {
+  ~id: int {readOnly}
+  ~studentEmail: String {readOnly}
+  ~description: String {readOnly}
+  ~createdAt: LocalDateTime {readOnly}
+  ~status: String = Pending
+  ~resolutionDetails: String
+  +Complaint(id: int, studentEmail: String, description: String)
+  +dateText(): String
+}
+
+Main ..> AuthService : routes authentication
+Main ..> DataStore : initializes
+AuthService ..> Student : authenticates
+AuthService ..> Professor : authenticates
+AuthService ..> TeachingAssistant : authenticates
+AuthService ..> DataStore : checks credentials
+StudentService ..> Student : uses
+StudentService ..> Course : validates registration
+StudentService ..> Complaint : submits
+StudentService ..> DataStore : reads/writes
+ProfessorService ..> Course : updates/views
+ProfessorService ..> Professor : operates on
+ProfessorService ..> DataStore : queries
+TeachingAssistantService ..> Student : grades assigned courses
+TeachingAssistantService ..> TeachingAssistant : operates on
+TeachingAssistantService ..> Course : assigned courses
+TeachingAssistantService ..> DataStore : allLearners()
+AdminService ..> DataStore : manages records
+AdminService ..> TeachingAssistantAdminService : delegates
+TeachingAssistantAdminService ..> TeachingAssistant : assigns
+TeachingAssistantAdminService ..> Course : course keys
+TeachingAssistantAdminService ..> DataStore : repository
+TeachingAssistant --|> Student : inherits
+DataStore o-- TeachingAssistant : TAs
+DataStore o-- Student : students
+DataStore o-- Professor : professors
+DataStore o-- Course : courses
+DataStore o-- Complaint : complaints
+TeachingAssistant ..> Course : assignedCourseKeys
+Student ..> Course : registrations/grades by keys
+Course ..> Professor : professor email/name
+Complaint ..> Student : studentEmail
+@enduml
+
+@startuml CourseRegistration_ProposedBriefDesign
+ title Assignment 2 Brief Reference - Target Additions\nNot implemented in supplied project
+ skinparam classAttributeIconSize 0
+ skinparam classBackgroundColor #FEE2E2
+ skinparam classBorderColor #B91C1C
+ class "Feedback<T>" as Feedback <<generic; proposed>> {
+  -studentEmail: String
+  -courseKey: String
+  -value: T
+  -submittedAt: LocalDateTime
+  +Feedback(studentEmail: String, courseKey: String, value: T)
+  +getValue(): T
+ }
+ class FeedbackService <<proposed utility>> {
+  +{static} submitRating(...): void
+  +{static} submitComment(...): void
+  +{static} feedbackForCourse(...): List<Feedback<?>>
+ }
+ class Exception
+ class CourseFullException {
+  +CourseFullException(message: String)
+ }
+ class InvalidLoginException {
+  +InvalidLoginException(message: String)
+ }
+ class DropDeadlinePassedException {
+  +DropDeadlinePassedException(message: String)
+ }
+ FeedbackService ..> Feedback : would store 1..*
+ Feedback ..> "Brief reference" : feedback for
+ CourseFullException --|> Exception
+ InvalidLoginException --|> Exception
+ DropDeadlinePassedException --|> Exception
+ note "These are proposed additions only; not present in the supplied Java archive." as N
+ N .. Feedback
+@enduml

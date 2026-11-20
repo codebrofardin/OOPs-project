@@ -1,0 +1,25 @@
+Assignment 2 UML - VS Code use
+
+Open Assignment2_CourseRegistration_UML.drawio in VS Code with the
+"Draw.io Integration" extension. It is an editable diagrams.net file:
+you can change text, move colour-coded blocks, change connectors, or export PDF/PNG.
+
+Page 1: Implemented Classes
+- Faithful to the supplied Java project.
+- Includes the TeachingAssistant extends Student inheritance relationship,
+  TA services, TA administration, role authentication, storage and domain data.
+
+Page 2: Brief Reference - Not Implemented
+- Clearly marked as a design reference, not current source code.
+- The Assignment 2 brief asks for generic feedback and custom exceptions, but the supplied
+  archive has no Feedback<T>, CourseFullException, InvalidLoginException, or
+  DropDeadlinePassedException class.
+- Remove this page from a submission if you do not add the matching code first.
+
+Colour palette
+- Purple: services/controllers
+- Dark purple: Teaching Assistant-specific services
+- Green: domain roles/entities
+- Amber: in-memory DataStore
+- Blue: entry point and planned generic feedback
+- Red/pink: requirements that are not implemented in the supplied archive
