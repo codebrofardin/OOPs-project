@@ -87,6 +87,7 @@ public final class StudentService {
             System.out.println("Schedule clash detected. Ask the professor/admin to update the class timing."); return;
         }
         registered.add(course.uniqueKey());
+        DataStore.saveAll();
         System.out.println("Successfully registered for " + course.title + " (" + course.shortName + ").");
         System.out.printf("Registered credits: %.2f / %d%n", newCredits, DataStore.CREDIT_LIMIT);
     }
@@ -174,6 +175,7 @@ public final class StudentService {
         String key = (String) registered.toArray()[selected - 1];
         registered.remove(key);
         student.grades.remove(key);
+        DataStore.saveAll();
         System.out.println("Course dropped successfully.");
     }
 
@@ -181,6 +183,7 @@ public final class StudentService {
         String description = AppInput.read("Describe your issue: ");
         if (description.isEmpty()) { System.out.println("Complaint description cannot be empty."); return; }
         DataStore.complaints.add(new Complaint(DataStore.nextComplaintId(), student.email, description));
+        DataStore.saveAll();
         System.out.println("Complaint submitted. Status: Pending.");
     }
 
