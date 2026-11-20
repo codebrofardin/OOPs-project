@@ -7,7 +7,8 @@ you can change text, move colour-coded blocks, change connectors, or export PDF/
 Page 1: Implemented Classes
 - Faithful to the supplied Java project.
 - Includes the TeachingAssistant extends Student inheritance relationship,
-  TA services, TA administration, role authentication, storage and domain data.
+  TA services, TA administration, role authentication, domain data, and the
+  JDBC persistence classes DbUtility and CourseRegistrationDao.
 
 Page 2: Brief Reference - Not Implemented
 - Clearly marked as a design reference, not current source code.
@@ -20,6 +21,7 @@ Colour palette
 - Purple: services/controllers
 - Dark purple: Teaching Assistant-specific services
 - Green: domain roles/entities
-- Amber: in-memory DataStore
+- Amber: DataStore application cache
+- Blue: JDBC persistence classes (DbUtility and CourseRegistrationDao)
 - Blue: entry point and planned generic feedback
 - Red/pink: requirements that are not implemented in the supplied archive
