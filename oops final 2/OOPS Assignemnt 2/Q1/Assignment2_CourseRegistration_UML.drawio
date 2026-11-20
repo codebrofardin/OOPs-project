@@ -4,10 +4,10 @@
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="title" value="&lt;b&gt;Assignment 2 - Course Registration System&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Implemented UML class diagram - colour-coded by responsibility&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
+                <mxCell id="title" value="&lt;b&gt;Assignment 2 - Course Registration System&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;Implemented UML class diagram with JDBC/MySQL persistence&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;fontColor=#0F172A;" parent="1" vertex="1">
                     <mxGeometry x="600" y="25" width="1150" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="legend" value="&lt;b&gt;Legend&lt;/b&gt;&lt;br/&gt;&lt;font color=&quot;#4F46E5&quot;&gt;Purple&lt;/font&gt; service/controller &amp;nbsp; &lt;font color=&quot;#047857&quot;&gt;Green&lt;/font&gt; domain role &amp;nbsp; &lt;font color=&quot;#B45309&quot;&gt;Amber&lt;/font&gt; storage&lt;br/&gt;+ public, - private, ~ package-private; dashed arrow = dependency; hollow triangle = inheritance; diamond = aggregation." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontSize=13;" parent="1" vertex="1">
+                <mxCell id="legend" value="&lt;b&gt;Legend&lt;/b&gt;&lt;br/&gt;&lt;font color=&quot;#4F46E5&quot;&gt;Purple&lt;/font&gt; service/controller &amp;nbsp; &lt;font color=&quot;#047857&quot;&gt;Green&lt;/font&gt; domain role &amp;nbsp; &lt;font color=&quot;#B45309&quot;&gt;Amber&lt;/font&gt; application cache &amp;nbsp; &lt;font color=&quot;#1D4ED8&quot;&gt;Blue&lt;/font&gt; JDBC persistence&lt;br/&gt;+ public, - private, ~ package-private; dashed arrow = dependency; hollow triangle = inheritance; diamond = aggregation." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="1850" y="35" width="530" height="110" as="geometry"/>
                 </mxCell>
                 <mxCell id="main" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b&gt;Main&lt;/b&gt;&lt;/div&gt;&lt;hr/&gt;+ {static} main(args: String[]): void" style="shape=umlClass;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=13;" parent="1" vertex="1">
@@ -34,7 +34,7 @@
                 <mxCell id="appInput" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b&gt;AppInput&lt;/b&gt; &amp;lt;&amp;lt;utility&amp;gt;&amp;gt;&lt;/div&gt;&lt;hr/&gt;- {static} SCANNER: Scanner&lt;hr/&gt;+ {static} read(prompt: String): String&lt;br/&gt;+ {static} readInt(prompt: String): int&lt;br/&gt;+ {static} readDouble(prompt: String): double&lt;br/&gt;+ {static} readPositiveDouble(...): double&lt;br/&gt;+ {static} line(): void" style="shape=umlClass;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="2115" y="610" width="350" height="230" as="geometry"/>
                 </mxCell>
-                <mxCell id="dataStore" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b&gt;DataStore&lt;/b&gt; &amp;lt;&amp;lt;utility&amp;gt;&amp;gt;&lt;/div&gt;&lt;hr/&gt;+ {static} CREDIT_LIMIT: int = 20&lt;br/&gt;+ {static} ADMIN_EMAIL, ADMIN_PASSWORD: String&lt;br/&gt;+ {static} students: Map&amp;lt;String, Student&amp;gt;&lt;br/&gt;+ {static} teachingAssistants: Map&amp;lt;String, TeachingAssistant&amp;gt;&lt;br/&gt;+ {static} professors: Map&amp;lt;String, Professor&amp;gt;&lt;br/&gt;+ {static} courses: Map&amp;lt;String, Course&amp;gt;&lt;br/&gt;+ {static} complaints: List&amp;lt;Complaint&amp;gt;&lt;br/&gt;- {static} complaintSequence: int&lt;hr/&gt;+ {static} nextComplaintId(): int&lt;br/&gt;+ {static} allLearners(): List&amp;lt;Student&amp;gt;&lt;br/&gt;+ {static} loadTeachingAssistants(): void&lt;br/&gt;+ {static} addCourse(course: Course): void&lt;br/&gt;+ {static} coursesForSemester(...): List&amp;lt;Course&amp;gt;&lt;br/&gt;+ {static} coursesForProfessor(...): List&amp;lt;Course&amp;gt;&lt;br/&gt;+ {static} loadInitialCourses(): void" style="shape=umlClass;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" parent="1" vertex="1">
+                <mxCell id="dataStore" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b&gt;DataStore&lt;/b&gt; &amp;lt;&amp;lt;application cache&amp;gt;&amp;gt;&lt;/div&gt;&lt;hr/&gt;+ {static} CREDIT_LIMIT: int = 20&lt;br/&gt;+ {static} ADMIN_EMAIL, ADMIN_PASSWORD: String&lt;br/&gt;+ {static} students, teachingAssistants, professors: Map&lt;br/&gt;+ {static} courses: Map&amp;lt;String, Course&amp;gt;&lt;br/&gt;+ {static} complaints: List&amp;lt;Complaint&amp;gt;&lt;br/&gt;- {static} complaintSequence: int&lt;hr/&gt;+ {static} nextComplaintId(): int&lt;br/&gt;+ {static} findLearner(email: String): Student&lt;br/&gt;+ {static} loadPersistentData(): void&lt;br/&gt;+ {static} saveAll(): void&lt;br/&gt;+ {static} allLearners(): List&amp;lt;Student&amp;gt;&lt;br/&gt;+ {static} loadTeachingAssistants(): void&lt;br/&gt;+ {static} addCourse(course: Course): void&lt;br/&gt;+ {static} coursesForSemester(...): List&amp;lt;Course&amp;gt;&lt;br/&gt;+ {static} coursesForProfessor(...): List&amp;lt;Course&amp;gt;&lt;br/&gt;+ {static} loadInitialCourses(): void" style="shape=umlClass;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="955" y="700" width="520" height="385" as="geometry"/>
                 </mxCell>
                 <mxCell id="student" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b&gt;Student&lt;/b&gt;&lt;/div&gt;&lt;hr/&gt;~ name: String&lt;br/&gt;~ email: String {readOnly}&lt;br/&gt;~ password: String&lt;br/&gt;~ phone, address: String&lt;br/&gt;~ currentSemester: int = 1&lt;br/&gt;~ grades: Map&amp;lt;String, Double&amp;gt;&lt;br/&gt;~ registrations: Map&amp;lt;Integer, LinkedHashSet&amp;lt;String&amp;gt;&amp;gt;&lt;br/&gt;~ completedSemesters: Set&amp;lt;Integer&amp;gt;&lt;hr/&gt;+ Student(name: String, email: String, password: String)" style="shape=umlClass;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fontSize=12;" parent="1" vertex="1">
@@ -54,6 +54,12 @@
                 </mxCell>
                 <mxCell id="sourceNote" value="&lt;b&gt;Source-faithful scope&lt;/b&gt;&lt;br/&gt;The inheritance and TA services are implemented. Generic feedback and custom exceptions required by the brief are not classes in the supplied project; see page 2 for a clearly-labelled target design." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontSize=13;" parent="1" vertex="1">
                     <mxGeometry x="70" y="720" width="500" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="dao" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b&gt;CourseRegistrationDao&lt;/b&gt; &amp;lt;&amp;lt;JDBC DAO&amp;gt;&amp;gt;&lt;/div&gt;&lt;hr/&gt;+ {static} createTables(): void&lt;br/&gt;+ {static} loadData(): void&lt;br/&gt;+ {static} saveData(): void&lt;hr/&gt;- {static} insertStudent(...): void&lt;br/&gt;- {static} text(value: String): String&lt;br/&gt;- {static} close(...): void" style="shape=umlClass;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="1600" width="440" height="245" as="geometry"/>
+                </mxCell>
+                <mxCell id="dbUtility" value="&lt;div style=&quot;text-align:center;&quot;&gt;&lt;b&gt;DbUtility&lt;/b&gt; &amp;lt;&amp;lt;JDBC utility&amp;gt;&amp;gt;&lt;/div&gt;&lt;hr/&gt;- {static} DRIVER, URL, USER, PASSWORD: String&lt;hr/&gt;+ {static} getConnection(): Connection" style="shape=umlClass;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1490" y="1620" width="450" height="160" as="geometry"/>
                 </mxCell>
                 <mxCell id="e1" value="routes authentication" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fontSize=11;" parent="1" source="main" target="auth" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -149,6 +155,12 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="e32" value="studentEmail" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fontSize=11;" parent="1" source="complaint" target="student" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e33" value="loads/saves" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fontSize=11;" parent="1" source="dataStore" target="dao" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e34" value="gets Connection" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fontSize=11;" parent="1" source="dao" target="dbUtility" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
             </root>
