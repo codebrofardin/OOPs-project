@@ -67,7 +67,7 @@ class AppInput <<utility>> {
   +{static} readPositiveDouble(...): double
   +{static} line(): void
 }
-class DataStore <<utility; in-memory storage>> {
+class DataStore <<utility; application cache>> {
   +{static} CREDIT_LIMIT: int = 20
   +{static} ADMIN_EMAIL, ADMIN_PASSWORD: String
   +{static} students: Map<String, Student>
@@ -77,12 +77,28 @@ class DataStore <<utility; in-memory storage>> {
   +{static} complaints: List<Complaint>
   -{static} complaintSequence: int
   +{static} nextComplaintId(): int
+  +{static} updateComplaintSequence(existingId: int): void
+  +{static} findLearner(email: String): Student
+  +{static} loadPersistentData(): void
+  +{static} saveAll(): void
   +{static} allLearners(): List<Student>
   +{static} loadTeachingAssistants(): void
   +{static} addCourse(course: Course): void
   +{static} coursesForSemester(...): List<Course>
   +{static} coursesForProfessor(...): List<Course>
   +{static} loadInitialCourses(): void
+}
+class DbUtility <<JDBC utility>> {
+  -{static} DRIVER, URL, USER, PASSWORD: String
+  +{static} getConnection(): Connection
+}
+class CourseRegistrationDao <<JDBC DAO>> {
+  +{static} createTables(): void
+  +{static} loadData(): void
+  +{static} saveData(): void
+  -{static} insertStudent(...): void
+  -{static} text(value: String): String
+  -{static} close(...): void
 }
 class Student {
   ~name: String
@@ -165,6 +181,11 @@ DataStore o-- Student : students
 DataStore o-- Professor : professors
 DataStore o-- Course : courses
 DataStore o-- Complaint : complaints
+DataStore ..> CourseRegistrationDao : loads/saves
+CourseRegistrationDao ..> DbUtility : gets Connection
+CourseRegistrationDao ..> Connection : creates Statement
+CourseRegistrationDao ..> Statement : executes SQL
+CourseRegistrationDao ..> ResultSet : reads SELECT rows
 TeachingAssistant ..> Course : assignedCourseKeys
 Student ..> Course : registrations/grades by keys
 Course ..> Professor : professor email/name
